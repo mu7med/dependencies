@@ -1,0 +1,148 @@
+
+
+---
+
+🔍 Key Takeaways So Far
+
+Authority-side: GCP Apigee (hosted on Deem, the Saudi government cloud) — they’ll expose API endpoints for you to push data or might poll you.
+
+Your side: Oracle 19c — you’ll need to detect data changes (CDC) and securely transmit them to Apigee.
+
+Your challenge: Understand how to implement CDC securely, without having full infra knowledge yet.
+
+
+
+---
+
+✅ Meeting Strategy with This Info
+
+🧭 Your Framing in the Meeting:
+
+> “We understand you're using Apigee on GCP hosted on Deem, and you're expecting integration via CDC from our Oracle 19c. I’d like to clarify some integration and security details to ensure we design a pipeline that meets your performance and compliance requirements.”
+
+
+
+That makes you sound prepared and focused, without needing to oversell.
+
+
+---
+
+🎯 Key Technical Questions to Ask the Insurance Authority
+
+1. CDC Expectations
+
+Do you expect full real-time streaming or periodic CDC batch updates (e.g., every 10 minutes, hourly)?
+
+Will you pull changes from our API, or do you expect us to push the changes to your Apigee endpoints?
+
+
+> 📌 Why: Helps decide whether to use GoldenGate/Oracle Streams, or log-based tools like Debezium, Kafka Connect, etc.
+
+
+
+
+---
+
+2. API Specification & Delivery
+
+Will you provide a Swagger/OpenAPI spec for the endpoints we’ll push to?
+
+Are the APIs synchronous (REST) or asynchronous (pub/sub, webhook-style)?
+
+Do you expect individual change records or batched payloads?
+
+
+> 📌 Why: Impacts your message structure and performance tuning.
+
+
+
+
+---
+
+3. Security & Network
+
+Will data exchange happen over public internet, VPN, or direct cloud interconnect (DCI)?
+
+What authentication method is used? (e.g., OAuth 2.0, mTLS, JWT)
+
+Do you require data to be encrypted at rest and in transit, and how are API keys/tokens rotated?
+
+
+> 📌 Why: You’ll need to work with your network/security teams and possibly GCP Peering/Deem interconnect.
+
+
+
+
+---
+
+4. Error Handling & Retry
+
+If a submission to Apigee fails (e.g., API returns 500), what’s the expected retry policy?
+
+Will we receive a status callback or webhook for processed data?
+
+
+> 📌 Why: Helps you plan queueing, buffering, or dead-letter mechanisms.
+
+
+
+
+---
+
+📦 Questions You Should Ask Internally (Post-Meeting)
+
+These go to your DBAs, DevOps team, and application owners:
+
+Oracle & Infra
+
+Do we currently run Oracle GoldenGate, LogMiner, or Streams for CDC?
+
+Is the Oracle 19c instance on-prem or cloud (OCI/AWS)?
+
+What outbound internet or VPN connectivity do we have?
+
+What is our policy for exposing internal data to third parties (e.g., DMZ/API Gateway)?
+
+
+
+---
+
+🚧 Risks & Contrarian Considerations
+
+Latency vs. consistency trade-off: If Apigee expects real-time updates but your infra can't support it, negotiate.
+
+Too much CDC noise: Unfiltered CDC can overload integration — ask if they want specific tables/columns only.
+
+Government audits: Deem may have extra compliance rules (e.g., NCA, SAMA). Get security involved early.
+
+
+
+---
+
+🚀 How You Can Add Value in the Meeting
+
+Even as a newcomer:
+
+Drive structured dialogue → Guide the meeting using a question list like the one above.
+
+Summarize decisions clearly → “So we’ve agreed to use push-based CDC via REST API with OAuth 2.0 over VPN.”
+
+Capture integration blockers → “We need to verify GoldenGate license and check VPN options with security.”
+
+
+
+---
+
+📄 Would You Like?
+
+I can prepare for you:
+
+✅ A PDF meeting cheat sheet (printable) with questions + notes
+
+✅ A follow-up email template you can send after the meeting
+
+✅ A diagram showing integration architecture between Oracle CDC → DevOps layer → Apigee
+
+
+Just let me know your preferred format or delivery medium (email, document, diagram).
+
